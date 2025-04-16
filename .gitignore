@@ -172,6 +172,7 @@ cython_debug/
 artifact/
 logs/
 research/logs/
+research/data/
 mongo_test.py
 test.ipynb
 test.json 
