@@ -169,3 +169,10 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+artifact/
+logs/
+research/logs/
+mongo_test.py
+test.ipynb
+test.json 
+test.py
