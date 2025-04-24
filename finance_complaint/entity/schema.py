@@ -69,12 +69,40 @@ class FinanceDataSchema:
         return fetaures
     
     @property
+    def im_one_hot_encoding_features(self) -> List[str]:
+        return [f"im_{col}" for col in self.one_hot_encoding_features]
+    
+    @property
+    def string_indexer_one_hot_features(self) -> List[str]:
+        return [f"si_{col}" for col in self.one_hot_encoding_features]
+    
+    @property
+    def tf_one_hot_encoding_features(self) -> List[str]:
+        return [f"tf_{col}" for col in self.one_hot_encoding_features]
+
+    @property
     def tfidf_fetaures(self) -> List[str]:
         fetaures = [
             self.col_issue
         ]
         return fetaures
     
+    @property
+    def tf_tfidf_features(self):
+        return [f"tf_{col}" for col in self.tfidf_fetaures]
+    
+    @property
+    def derived_input_features(self) -> List[str]:
+        features = [
+            self.col_date_sent_to_company,
+            self.col_date_received
+        ]
+        return features
+
+    @property
+    def derived_output_features(self) -> List[str]:
+        return [self.col_diff_in_days]
+
     @property
     def required_columns(self) -> List[str]:
         features = [self.target_column] + self.one_hot_encoding_features + self.tfidf_fetaures + \
