@@ -13,8 +13,8 @@ DATA_INGESTION_FILE_NAME = "finance_complaint"
 DATA_INGESTION_FEATURE_STORE_DIR = "feature_store"
 DATA_INGESTION_FAILED_DIR = "failed_downloaded_files"
 DATA_INGESTION_METADATA_FILE_NAME = "meta_info.yaml"
-DATA_INGESTION_MIN_START_DATE = "2022-05-01"
-DATA_INGESTION_DATA_SOURCE_URL = f"https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1"\
+DATA_INGESTION_MIN_START_DATE = "2022-01-01"
+DATA_INGESTION_DATA_SOURCE_URL = f"https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/"\
                                 f"?date_received_max=<todate>&date_received_min=<fromdate>"\
                                 f"&field=all&format=json"
 # Data Validation Constants
@@ -33,7 +33,7 @@ class TrainingPipelineConfig:
 class DataIngestionConfig:
 
     def __init__(self, training_pipeline_config: TrainingPipelineConfig, from_date=DATA_INGESTION_MIN_START_DATE,
-                 to_date=None):
+                 to_date='2023-01-01'):
         try:
             self.from_date = from_date
             min_start_date = datetime.strptime(DATA_INGESTION_MIN_START_DATE, "%Y-%m-%d")
@@ -46,15 +46,17 @@ class DataIngestionConfig:
             # to_date is none then consider todays date
             if to_date is None:
                 self.to_date = datetime.now().strftime("%Y-%m-%d")
+            else:
+                self.to_date = to_date
 
             # create master directory
             data_ingestion_master_dir = os.path.join(os.path.dirname(training_pipeline_config.artifact_dir), DATA_INGESTION_DIR)
 
             self.data_ingestion_dir = os.path.join(data_ingestion_master_dir, TIMESTAMP)
 
-            self.metadate_file_path = os.path.join(data_ingestion_master_dir, DATA_INGESTION_METADATA_FILE_NAME)
+            self.metadata_file_path = os.path.join(data_ingestion_master_dir, DATA_INGESTION_METADATA_FILE_NAME)
 
-            data_ingestion_metadata = DataIngestionMetadata(metadata_file_path=self.metadate_file_path)
+            data_ingestion_metadata = DataIngestionMetadata(metadata_file_path=self.metadata_file_path)
 
             if data_ingestion_metadata.is_metadata_file_present:
                 metadata_info = data_ingestion_metadata.get_meta_data_info()
