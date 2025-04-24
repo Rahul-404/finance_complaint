@@ -54,7 +54,7 @@ class DataValidation():
         this function is responsible for creating report of missing data for each columns
         """
         try:
-            missing_report: Dict[str: MissingReport] = Dict()
+            missing_report: Dict[str: MissingReport] = dict()
             logger.info(f"Prepraing missing reports for each column")
             number_of_row = dataframe.count()
 
@@ -161,7 +161,7 @@ class DataValidation():
             # printing number of rows and columns
             print(f"Row: [{dataframe.count()}] Column: [{len(dataframe.columns)}]")
             # printing expected columns and present columns
-            print(f"Expected Column: {self.required_columns}\nPresent Columns: {dataframe.columns}")
+            print(f"Expected Column: {self.schema.required_columns}\nPresent Columns: {dataframe.columns}")
             # creating directory for accepted data
             os.makedirs(self.data_validation_config.accepted_data_dir, exist_ok=True)
             # preparing artifact path
