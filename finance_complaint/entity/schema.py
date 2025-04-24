@@ -79,17 +79,6 @@ class FinanceDataSchema:
     @property
     def tf_one_hot_encoding_features(self) -> List[str]:
         return [f"tf_{col}" for col in self.one_hot_encoding_features]
-
-    @property
-    def tfidf_fetaures(self) -> List[str]:
-        fetaures = [
-            self.col_issue
-        ]
-        return fetaures
-    
-    @property
-    def tf_tfidf_features(self):
-        return [f"tf_{col}" for col in self.tfidf_fetaures]
     
     @property
     def derived_input_features(self) -> List[str]:
@@ -102,6 +91,36 @@ class FinanceDataSchema:
     @property
     def derived_output_features(self) -> List[str]:
         return [self.col_diff_in_days]
+    
+    @property
+    def numerical_columns(self) -> List[str]:
+        return self.derived_output_features
+    
+    @property
+    def im_numerical_columns(self) -> List[str]:
+        return [f"im_{col}" for col in self.numerical_columns]
+
+    @property
+    def tfidf_features(self) -> List[str]:
+        fetaures = [
+            self.col_issue
+        ]
+        return fetaures
+    
+    @property
+    def tf_tfidf_features(self):
+        return [f"tf_{col}" for col in self.tfidf_fetaures]
+
+    @property
+    def input_fetaures(self) -> List[str]:
+        in_features = self.tf_one_hot_encoding_features + self.im_numerical_columns + self.tf_tfidf_features
+        return in_features
+    
+    @property
+    def required_prediction_columns(self) -> List[str]:
+        features = self.one_hot_encoding_features + self.tfidf_features + \
+        [self.col_date_sent_to_company, self.col_date_received]
+        return features
 
     @property
     def required_columns(self) -> List[str]:
@@ -115,5 +134,26 @@ class FinanceDataSchema:
             self.col_complaint_id,
             self.col_sub_product, self.col_complaint_what_happened
         ]
-
         return features
+    
+    @property
+    def vector_assembler_output(self) -> str:
+        return "va_input_features"
+    
+    @property
+    def scaled_vector_input_features(self) -> str:
+        return "scaled_input_features"
+    
+    @property
+    def target_indexed_label(self) -> str:
+        return f"indexed_{self.target_column}"
+    
+    @property
+    def prediction_column_name(self) -> str:
+        return "prediction"
+    
+    @property
+    def prediction_label_column_name(self) -> str:
+        return f"{self.prediction_column_name}_{self.target_column}"
+    
+    
