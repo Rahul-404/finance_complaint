@@ -109,10 +109,10 @@ class FinanceDataSchema:
     
     @property
     def tf_tfidf_features(self):
-        return [f"tf_{col}" for col in self.tfidf_fetaures]
+        return [f"tf_{col}" for col in self.tfidf_features]
 
     @property
-    def input_fetaures(self) -> List[str]:
+    def input_features(self) -> List[str]:
         in_features = self.tf_one_hot_encoding_features + self.im_numerical_columns + self.tf_tfidf_features
         return in_features
     
@@ -124,7 +124,7 @@ class FinanceDataSchema:
 
     @property
     def required_columns(self) -> List[str]:
-        features = [self.target_column] + self.one_hot_encoding_features + self.tfidf_fetaures + \
+        features = [self.target_column] + self.one_hot_encoding_features + self.tfidf_features + \
                     [self.col_date_sent_to_company, self.col_date_received]
         return features
     
