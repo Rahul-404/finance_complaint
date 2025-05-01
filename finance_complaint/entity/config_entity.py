@@ -23,6 +23,40 @@ DATA_VALIDATION_FILE_NAME = "finance_complaint"
 DATA_VALIDATION_ACCEPTED_DATA_DIR = "accepted_data"
 DATA_VALIDATION_REJECTED_DATA_DIR = "rejected_data"
 
+# Data Transformation Constants
+DATA_TRANSFORMATION_DIR = "data_transformation"
+DATA_TRANSFORMATION_PIPELINE_DIR = "transformed_pipeline"
+DATA_TRANSFORMATION_TRAIN_DIR = "train"
+DATA_TRANSFORMATION_FILE_NAME = "finance_complaint"
+DATA_TRANSFORMATION_TEST_DIR = "test"
+DATA_TRANSFORMATION_TEST_SIZE = 0.3
+
+# Model Trainer Constants
+MODEL_TRAINER_BASE_ACCURACY = 0.6
+MODEL_TRAINER_DIR = "model_trainer"
+MODEL_TRAINER_TRAINED_MODEL_DIR = "trained_model"
+MODEL_TRAINER_MODEL_NAME = "finance_estimator"
+MODEL_TRAINER_LABEL_INDEXER_DIR = "label_indexer"
+MODEL_TRAINER_MODEL_METRIC_NAMES = [
+    'f1',
+    "weightedPrecision",
+    "weightedRecall",
+    "weightedTruePositiveRate",
+    "weightedFalsePositiveRate",
+    "weightedFMeasure",
+    "truePositiveRateByLabel",
+    "falsePositiveRateByLabel",
+    "precisionByLabel",
+    "recallByLabel",
+    "fMeasureByLabel"
+]
+
+# Model Evaluation Constants
+MODEL_EVALUATION_DIR = "model_evaluation"
+MODEL_EVALUATION_REPORT_DIR = "report"
+MODEL_EVALUATION_REPORT_FILE_NAME = "evaluation_report"
+MODEL_EVALUATION_THRESHOLD_VALUE = 0.002
+MODEL_EVALUATION_METRIC_NAMES = ["f1",]
 
 @dataclass
 class TrainingPipelineConfig:
@@ -90,18 +124,27 @@ class DataValidationConfig:
 @dataclass
 class DataTransformationConfig:
 
-    def __init__(self):
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig) -> None:
         try:
-            pass
+            data_transformation_dir = os.path.join(training_pipeline_config.artifact_dir, DATA_TRANSFORMATION_DIR)
+            self.transformed_train_dir = os.path.join(data_transformation_dir, DATA_TRANSFORMATION_TRAIN_DIR)
+            self.transformed_test_dir = os.path.join(data_transformation_dir, DATA_TRANSFORMATION_TEST_DIR)
+            self.export_pipeline_dir = os.path.join(data_transformation_dir, DATA_TRANSFORMATION_PIPELINE_DIR)
+            self.file_name = DATA_TRANSFORMATION_FILE_NAME
+            self.test_size = DATA_TRANSFORMATION_TEST_SIZE
         except Exception as e:
             raise FinanceException(e, sys)
         
 @dataclass
 class ModelTrainerConfig:
 
-    def __init__(self):
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig) -> None:
         try:
-            pass
+            model_trained_dir = os.path.join(training_pipeline_config.artifact_dir, MODEL_TRAINER_DIR)
+            self.trained_model_file_path = os.path.join(model_trained_dir, MODEL_TRAINER_TRAINED_MODEL_DIR, MODEL_TRAINER_MODEL_NAME)
+            self.label_indexer_model_dir = os.path.join(model_trained_dir, MODEL_TRAINER_LABEL_INDEXER_DIR)
+            self.base_accuracy = MODEL_TRAINER_BASE_ACCURACY
+            self.metric_list = MODEL_EVALUATION_METRIC_NAMES
         except Exception as e:
             raise FinanceException(e, sys)
     
