@@ -149,6 +149,14 @@ class ModelTrainerConfig:
             raise FinanceException(e, sys)
     
 @dataclass
+class ModelEvaluationConfig:
+
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig) -> None:
+        self.model_evaluation_dir = os.path.join(training_pipeline_config.artifact_dir, MODEL_EVALUATION_DIR)
+        self.threshold=MODEL_EVALUATION_THRESHOLD_VALUE
+        self.metric_list = MODEL_EVALUATION_METRIC_NAMES
+
+@dataclass
 class ModelPusherConfig:
 
     def __init__(self):
