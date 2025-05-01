@@ -1,10 +1,12 @@
 from finance_complaint.exception import FinanceException
+from finance_complaint.entity.schema import FinanceDataSchema
 from finance_complaint.logger import logging as logger
-from finance_complaint.entity.config_entity import (DataIngestionConfig, DataValidationConfig)
-from finance_complaint.entity.artifact_entity import (DataIngestionArtifact, DataValidationArtifact)
+from finance_complaint.entity.config_entity import (DataIngestionConfig, DataValidationConfig, DataTransformationConfig)
+from finance_complaint.entity.artifact_entity import (DataIngestionArtifact, DataValidationArtifact, DataTransformationArtifact)
 from finance_complaint.entity.config_entity import TrainingPipelineConfig
 from finance_complaint.components.data_ingestion import DataIngestion
 from finance_complaint.components.data_validation import DataValidation
+from finance_complaint.components.data_transformation import DataTransformation
 import sys, os
 
 class TrainingPipeline:
@@ -43,13 +45,28 @@ class TrainingPipeline:
         except Exception as e:
             raise FinanceException(e, sys)
         
+    def start_data_transformation(self, data_validation_artifact: DataValidationArtifact) -> DataTransformationArtifact:
+        """ 
+        responsible for data transformation 
+        """
+        try:
+            data_transformation_config = DataTransformationConfig(training_pipeline_config=self.training_pipeline_config)
+            data_transformation = DataTransformation(data_validation_artifact=data_validation_artifact,
+                                                     data_transformation_config=data_transformation_config)
+            
+            data_transformation_artifacts = data_transformation.initiate_data_transformation()
+            return data_transformation_artifacts
+        except Exception as e:
+            raise FinanceException(e, sys)
+        
     def start(self):
         try:
             # initalizating data ingestion
             data_ingestion_artifact = self.start_data_ingestion()
             # initalizing data validation
             data_validation_artifact = self.start_data_validation(data_ingestion_artifact=data_ingestion_artifact)
-
+            # initalizing data transformation
+            data_transformation_artifact = self.start_data_transformation(data_validation_artifact=data_validation_artifact)
         except Exception as e:
             raise FinanceException(e, sys)    
         
