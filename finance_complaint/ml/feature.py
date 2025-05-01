@@ -122,6 +122,9 @@ class DerivedFeatureGenerator(Transformer, HasInputCols, HasOutputCols,
         return self._set(outputCols=value)
     
     def _fit(self, dataframe: DataFrame):
+        return self
+
+    def _transform(self, dataframe: DataFrame):
         inputCols = self.getInputCols()
 
         for column in inputCols:
@@ -143,7 +146,7 @@ class FrequencyImputer(
     
     @keyword_only
     def __init__(self, inputCols: List[str] = None, outputCols: List[str] = None):
-        super(FrequencyInputer, self).__init__()
+        super(FrequencyImputer, self).__init__()
         self.topCategories = Param(self, "topCategories", "")
         self._setDefault(topCategories="")
         kwargs = self._input_kwargs
@@ -178,7 +181,7 @@ class FrequencyImputer(
         inputCols = self.getInputCols()
         topCategories = []
         for column in inputCols:
-            categoryCountByDesc = dataset.groupBy(column).count().filter(f'{column} is ')
+            categoryCountByDesc = dataset.groupBy(column).count().filter(f'{column} IS NOT NULL').sort(desc('count'))
             topCat = categoryCountByDesc.take(1)[0][column]
             topCategories.append(topCat)
         
@@ -201,9 +204,9 @@ class FrequencyImputerModel(FrequencyImputer, Transformer):
 
         updateMissingValues = dict(zip(outputCols, topCategories))
 
-        inpuCols = self.getInputCols()
+        inputCols = self.getInputCols()
 
-        for outputColumn, inputColumn in zip(outputCols, inpuCols):
+        for outputColumn, inputColumn in zip(outputCols, inputCols):
             dataset = dataset.withColumn(outputColumn, col(inputColumn))
             # print(dataset.columns)
             # print(outputColumn, inputColumn)
