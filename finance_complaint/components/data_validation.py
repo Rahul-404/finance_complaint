@@ -172,7 +172,7 @@ class DataValidation():
             dataframe.write.parquet(accepted_file_path)
             # preparing the artifact
             artifact = DataValidationArtifact(
-                accepted_file_path=self.data_validation_config.accepted_data_dir,
+                accepted_file_path=accepted_file_path,
                 rejected_dir=self.data_validation_config.rejected_data_dir
             )
             logger.info(f"Data validation artifact: [{artifact}]")
