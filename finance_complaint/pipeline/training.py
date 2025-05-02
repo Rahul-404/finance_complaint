@@ -1,13 +1,14 @@
 from finance_complaint.exception import FinanceException
 from finance_complaint.entity.schema import FinanceDataSchema
 from finance_complaint.logger import logging as logger
-from finance_complaint.entity.config_entity import (DataIngestionConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig)
-from finance_complaint.entity.artifact_entity import (DataIngestionArtifact, DataValidationArtifact, DataTransformationArtifact, ModelTrainerArtifact)
+from finance_complaint.entity.config_entity import (DataIngestionConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig, ModelEvaluationConfig)
+from finance_complaint.entity.artifact_entity import (DataIngestionArtifact, DataValidationArtifact, DataTransformationArtifact, ModelTrainerArtifact, ModelEvaluationArtifact)
 from finance_complaint.entity.config_entity import TrainingPipelineConfig
 from finance_complaint.components.data_ingestion import DataIngestion
 from finance_complaint.components.data_validation import DataValidation
 from finance_complaint.components.data_transformation import DataTransformation
 from finance_complaint.components.model_trainer import ModelTrainer
+from finance_complaint.components.model_evalutaion import ModelEvaluation
 import sys, os
 
 class TrainingPipeline:
@@ -71,6 +72,18 @@ class TrainingPipeline:
         except Exception as e:
             raise FinanceException(e, sys)
         
+    def start_model_evaluation(self, data_validation_artifact, model_trainer_artifact) -> ModelEvaluationArtifact:
+        try:
+            model_eval_config = ModelEvaluationConfig(training_pipeline_config=self.training_pipeline_config)
+            model_eval = ModelEvaluation(data_validation_artifact=data_validation_artifact,
+                                        model_trainer_artifact=model_trainer_artifact,
+                                        model_eval_config=model_eval_config
+                                        )
+            return model_eval.initiate_model_evaluation()
+        except Exception as e:
+            raise FinanceException(e, sys)
+
+        
     def start(self):
         try:
             # initalizating data ingestion
@@ -81,6 +94,12 @@ class TrainingPipeline:
             data_transformation_artifact = self.start_data_transformation(data_validation_artifact=data_validation_artifact)
             # initalizing model training
             model_trainer_artifact = self.start_model_trainer(data_transformation_artifact=data_transformation_artifact)
+            # initalizing model evaluation
+            model_eval_artifact = self.start_model_evaluation(data_validation_artifact=data_validation_artifact,
+                                                              model_trainer_artifact=model_trainer_artifact
+                                                              )
+
+            # initalizing model pusher
         except Exception as e:
             raise FinanceException(e, sys)    
         
