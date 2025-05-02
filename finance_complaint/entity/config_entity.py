@@ -149,7 +149,7 @@ class ModelTrainerConfig:
             self.trained_model_file_path = os.path.join(model_trained_dir, MODEL_TRAINER_TRAINED_MODEL_DIR, MODEL_TRAINER_MODEL_NAME)
             self.label_indexer_model_dir = os.path.join(model_trained_dir, MODEL_TRAINER_LABEL_INDEXER_DIR)
             self.base_accuracy = MODEL_TRAINER_BASE_ACCURACY
-            self.metric_list = MODEL_EVALUATION_METRIC_NAMES
+            self.metric_list = MODEL_TRAINER_MODEL_METRIC_NAMES
         except Exception as e:
             raise FinanceException(e, sys)
     
