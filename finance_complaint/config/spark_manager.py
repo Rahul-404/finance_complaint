@@ -4,11 +4,10 @@ import os
 
 load_dotenv()
 
-# spark_session = (SparkSession.builder.master('local[*]')
-# .config("spark.executor.memory","4g")
-# .config("spark.executor.cores","2")
-# .config("spark.files.maxPartitionBytes","134217728")
-# .appName('finance_complaint').getOrCreate())
+# to avoid version problem between "Driver" and "Wroker"
+# Replace with your actual Conda env Python path
+os.environ["PYSPARK_PYTHON"] = "/Users/rahulshelke/Documents/Data-Science/Data-Science-Projects/finance_complaint/venv/bin/python"
+os.environ["PYSPARK_DRIVER_PYTHON"] = "/Users/rahulshelke/Documents/Data-Science/Data-Science-Projects/finance_complaint/venv/bin/python"
 
 
 
