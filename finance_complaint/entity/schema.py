@@ -155,5 +155,5 @@ class FinanceDataSchema:
     @property
     def prediction_label_column_name(self) -> str:
         return f"{self.prediction_column_name}_{self.target_column}"
-    
+
     

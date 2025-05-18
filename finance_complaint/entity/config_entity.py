@@ -13,7 +13,7 @@ DATA_INGESTION_FILE_NAME = "finance_complaint"
 DATA_INGESTION_FEATURE_STORE_DIR = "feature_store"
 DATA_INGESTION_FAILED_DIR = "failed_downloaded_files"
 DATA_INGESTION_METADATA_FILE_NAME = "meta_info.yaml"
-DATA_INGESTION_MIN_START_DATE = "2022-01-01"
+DATA_INGESTION_MIN_START_DATE = "2013-01-01"
 DATA_INGESTION_DATA_SOURCE_URL = f"https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/"\
                                 f"?date_received_max=<todate>&date_received_min=<fromdate>"\
                                 f"&field=all&format=json"
@@ -72,7 +72,7 @@ class TrainingPipelineConfig:
 class DataIngestionConfig:
 
     def __init__(self, training_pipeline_config: TrainingPipelineConfig, from_date=DATA_INGESTION_MIN_START_DATE,
-                 to_date='2023-01-01'):
+                 to_date='2019-01-01'):
         try:
             self.from_date = from_date
             min_start_date = datetime.strptime(DATA_INGESTION_MIN_START_DATE, "%Y-%m-%d")
@@ -178,6 +178,7 @@ class BatchPredictionConfig:
             self.inbox_dir = os.path.join("data", "inbox")
             self.outbox_dir = os.path.join("data", "outbox")
             self.archive_dir = os.path.join("data", "archive")
+            # os.makedirs(self.inbox_dir , exist_ok=True)
             os.makedirs(self.outbox_dir , exist_ok=True)
             os.makedirs(self.archive_dir, exist_ok=True)
         except Exception as e:
