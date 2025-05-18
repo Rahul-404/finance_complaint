@@ -96,8 +96,6 @@ class TrainingPipeline:
         except Exception as e:
             raise FinanceException(e, sys)
 
-
-        
     def start(self):
         try:
             # initalizating data ingestion
@@ -120,4 +118,3 @@ class TrainingPipeline:
             raise FinanceException(e, sys)    
         
     
-        
