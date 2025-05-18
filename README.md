@@ -47,6 +47,12 @@ By using machine learning models and NLP techniques, the system can identify pat
     pip install -r requirements.txt
     ```
 
+    or create a environment using `environment.yaml`
+
+    ```bash
+    conda env create --prefix ./venv -f environment.yaml
+    ```
+
 4. Download the dataset (if not included in the repository) and place it in the `/data` folder.
 
 ## How It Works
