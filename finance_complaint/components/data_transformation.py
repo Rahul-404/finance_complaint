@@ -19,6 +19,7 @@ class DataTransformation:
                  schema=FinanceDataSchema()
                  ):
         try:
+            logger.info(f"{'>>'*20} Strting data transformation.{'<<'*20}")
             self.data_val_artifact = data_validation_artifact
             self.data_tf_config = data_transformation_config
             self.schema = schema
@@ -50,11 +51,11 @@ class DataTransformation:
             frequency_imputer = FrequencyImputer(inputCols=self.schema.one_hot_encoding_features, outputCols=self.schema.im_one_hot_encoding_features)
             stages.append(frequency_imputer)
 
-            string_indexer = StringIndexer(inputCols=self.schema.im_one_hot_encoding_features, outputCols=self.schema.string_indexer_one_hot_features) 
+            string_indexer = StringIndexer(inputCols=self.schema.im_one_hot_encoding_features, outputCols=self.schema.string_indexer_one_hot_features, handleInvalid="keep") 
             stages.append(string_indexer)
 
             one_hot_encoder = OneHotEncoder(inputCols=self.schema.string_indexer_one_hot_features,
-                                            outputCols=self.schema.tf_one_hot_encoding_features)
+                                            outputCols=self.schema.tf_one_hot_encoding_features, handleInvalid="keep")
 
             stages.append(one_hot_encoder)
 
@@ -151,6 +152,8 @@ class DataTransformation:
                 exported_pipeline_file_path = export_pipeline_file_path,
             )
             logger.info(f"Data tranformation artifact: [{data_tf_artifact}]")
+
+            logger.info(f"{'--'*20} Strting data transformation.{'--'*20}\n")
 
             return data_tf_artifact
         

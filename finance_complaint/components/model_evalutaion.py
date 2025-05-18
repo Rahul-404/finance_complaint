@@ -19,11 +19,12 @@ class ModelEvaluation:
                  model_eval_config: ModelEvaluationConfig,
                  schema = FinanceDataSchema()):
         try:
+            logger.info(f"{'>>'*20} Strting model evaluation.{'<<'*20}")
             self.model_eval_artifact_data = ModelEvaluationArtifactData()
             self.data_validation_artifact = data_validation_artifact
             self.model_eval_config = model_eval_config
             self.model_trainer_artifact = model_trainer_artifact
-            self.schem = schema
+            self.schema = schema
             self.model_resolver = ModelResolver()
             self.finance_estimator = FinanceComplaintEstimator()
         except Exception as e:
@@ -58,30 +59,31 @@ class ModelEvaluation:
 
             #load required model and label index
             label_indexer_model = StringIndexerModel.load(label_indexer_model_path)
+
             trained_model = PipelineModel.load(trained_model_file_path)
 
             #Read the dataframe
             dataframe: DataFrame = self.read_data()
-            dataframe = label_indexer_model
+            dataframe = label_indexer_model.transform(dataframe)
 
             best_model_path = self.model_resolver.get_best_model_path()
 
-
             best_model_dataframe = self.finance_estimator.transform(dataframe)
-
 
             #prediction using trained model
             trained_model_dataframe = trained_model.transform(dataframe)
-
 
             #compute f1 score for trained model
             trained_model_f1_score = get_score(dataframe=trained_model_dataframe, metric_name="f1",
                                             label_col=self.schema.target_indexed_label,
                                             prediction_col=self.schema.prediction_column_name)
+
             #compute f1 score for best model
             best_model_f1_score = get_score(dataframe=best_model_dataframe, metric_name="f1",
                                             label_col=self.schema.target_indexed_label,
                                             prediction_col=self.schema.prediction_column_name)
+            
+            print(f"\n-- best_model_f1_score: {best_model_f1_score}")
 
 
             logger.info(f"Trained_model_f1_score: {trained_model_f1_score}, Best model f1 score: {best_model_f1_score}")
@@ -110,6 +112,8 @@ class ModelEvaluation:
             model_evaluation_artifact = self.evaluate_trained_model()
             logger.info(f"Model evaluation artifact: {model_evaluation_artifact}")
             self.model_eval_artifact_data.save_eval_artifact(model_eval_artifact=model_evaluation_artifact)
+            logger.info(f"{'--'*20} Complete model evaluation.{'--'*20}\n")
             return model_evaluation_artifact
         except Exception as e:
             raise FinanceException(e, sys)
+

@@ -19,6 +19,7 @@ class ModelTrainer:
                  data_transformation_artifact: DataTransformationArtifact,
                  model_trainer_config: ModelTrainerConfig,
                  schema = FinanceDataSchema()):
+        logger.info(f"{'>>'*20} Strting model trainer.{'<<'*20}")
         self.data_transformation_artifact = data_transformation_artifact
         self.model_trainer_config = model_trainer_config
         self.schema = schema
@@ -102,7 +103,7 @@ class ModelTrainer:
             print(f"Train row: {train_dataframe.count()} Test row: {test_dataframe.count()}")
 
             label_indexer = StringIndexer(inputCol=self.schema.target_column,
-                          outputCol=self.schema.target_indexed_label)
+                          outputCol=self.schema.target_indexed_label, handleInvalid="skip")
             
             label_indexer_model = label_indexer.fit(train_dataframe)
 
@@ -139,6 +140,8 @@ class ModelTrainer:
                                                           model_trainer_test_metric_artifact=test_metric_artifact)
             
             logger.info(f"Model trainer artifact: {model_trainer_artifact}")
+
+            logger.info(f"{'--'*20} Completed model trainer.{'--'*20}\n")
 
             return model_trainer_artifact
         

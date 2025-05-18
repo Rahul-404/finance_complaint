@@ -275,7 +275,7 @@ class DataIngestion:
                 metadata_file_path=self.data_ingestion_config.metadata_file_path,
             )
             logger.info(f"Data ingestion artifact: {artifact}")
-
+            logger.info(f"{'--'*20} Completed data ingestion.{'--'*20}\n")
             return artifact
         except Exception as e:
             raise FinanceException(e, sys)

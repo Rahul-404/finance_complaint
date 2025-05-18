@@ -28,6 +28,7 @@ class DataValidation():
                 ):
         try:
             # super().__init__()
+            logger.info(f"{'>>'*20} Strting data validation.{'<<'*20}")
             self.data_ingestion_artifact: DataIngestionArtifact = data_ingestion_artifact
             self.data_validation_config = data_validation_config
             self.schema = schema       
@@ -176,6 +177,7 @@ class DataValidation():
                 rejected_dir=self.data_validation_config.rejected_data_dir
             )
             logger.info(f"Data validation artifact: [{artifact}]")
+            logger.info(f"{'--'*20} Completed data validation.{'--'*20}\n")
             # returning artifact
             return artifact
         except Exception as e:

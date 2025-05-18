@@ -9,12 +9,11 @@ import os
 
 class ModelPusher:
 
-
     def __init__(self, model_trainer_artifact: ModelTrainerArtifact, model_pusher_config: ModelPusherConfig):
+        logger.info(f"{'>>'*20} Strting model push.{'<<'*20}")
         self.model_trainer_artifact = model_trainer_artifact
         self.model_pusher_config = model_pusher_config
         self.model_resolver = ModelResolver(model_dir=self.model_pusher_config.saved_model_dir)
-
 
     def push_model(self) -> str:
         try:
@@ -33,6 +32,9 @@ class ModelPusher:
             model_pusher_artifact = ModelPusherArtifact(model_pushed_dir=self.model_pusher_config.pusher_model_dir,
                                     saved_model_dir=saved_model_path)
             logger.info(f"Model pusher artifact: {model_pusher_artifact}")
+            logger.info(f"{'--'*20} Complete model push.{'--'*20}\n")
             return model_pusher_artifact
         except Exception as e:
             raise FinanceException(e, sys)
+        
+        
