@@ -15,5 +15,3 @@ logging.basicConfig(
     format= "[%(asctime)s] \t%(levelname)s \t%(lineno)d \t%(filename)s \t%(funcName)s( ) \t%(message)s",
     level=logging.INFO
 )
-
-
