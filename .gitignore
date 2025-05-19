@@ -180,3 +180,9 @@ test.py
 test/
 .DS_Store
 saved_models/
+
+# Cloud storage
+.aws_creds
+
+# requirements
+requirements1.txt
